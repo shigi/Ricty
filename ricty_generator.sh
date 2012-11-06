@@ -2,7 +2,7 @@
 
 #
 # Ricty Generator
-ricty_version="3.2.1b"
+ricty_version="3.2.1"
 #
 # Author: Yasunori Yusa <lastname at save dot sys.t.u-tokyo.ac.jp>
 #
@@ -13,6 +13,7 @@ ricty_version="3.2.1b"
 # * Inconsolata Version 001.010
 # * Migu 1M     Version 20111002
 #                       20120411
+#                       20121030
 #
 # How to use:
 # 1. Install FontForge
