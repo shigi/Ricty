@@ -2,7 +2,7 @@
 
 #
 # Ricty Generator
-ricty_version="3.2.1"
+ricty_version="3.2.2b"
 #
 # Author: Yasunori Yusa <lastname at save dot sys.t.u-tokyo.ac.jp>
 #
@@ -404,14 +404,14 @@ fontstyle_list    = ["Regular", "Bold"]
 fontweight_list   = [400,       700]
 panoseweight_list = [5,         8]
 copyright         = "Ricty Generator Author: Yasunori Yusa\n" \\
-                  + "Copyright (c) 2006-2011 Raph Levien\n" \\
-                  + "Copyright (c) 2006-2011 itouhiro\n" \\
-                  + "Copyright (c) 2002-2011 M+ FONTS PROJECT\n" \\
+                  + "Copyright (c) 2006 Raph Levien\n" \\
+                  + "Copyright (c) 2006-2012 itouhiro\n" \\
+                  + "Copyright (c) 2002-2012 M+ FONTS PROJECT\n" \\
                   + "Copyright (c) 2003-2011 " \\
                   + "Information-technology Promotion Agency, Japan (IPA)\n" \\
                   + "Licenses:\n" \\
                   + "SIL Open Font License Version 1.1 " \\
-                  + "(http://scripts.sil.org/OFL)\n" \\
+                  + "(http://scripts.sil.org/ofl)\n" \\
                   + "IPA Font License Agreement v1.0 " \\
                   + "(http://ipafont.ipa.go.jp/ipa_font_license_v1.html)"
 version           = "${ricty_version}"
