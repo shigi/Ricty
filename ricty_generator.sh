@@ -281,13 +281,9 @@ ScaleToEm(860, 140)
 
 # remove ambiguous glyphs
 if ("$fullwidth_ambiguous_flag" == "true")
-    Select(0u00a2); Clear() # cent
-    Select(0u00a3); Clear() # pound
     Select(0u00a4); Clear() # currency
-    Select(0u00a5); Clear() # yen
     Select(0u00a7); Clear() # section
     Select(0u00a8); Clear() # dieresis
-    Select(0u00ac); Clear() # not
     Select(0u00ad); Clear() # soft hyphen
     Select(0u00b0); Clear() # degree
     Select(0u00b1); Clear() # plus-minus
@@ -305,8 +301,6 @@ if ("$fullwidth_ambiguous_flag" == "true")
     Select(0u2122); Clear() # TM
     Select(0u2191); Clear() # uparrow
     Select(0u2193); Clear() # downarrow
-    Select(0u2212); Clear() # minus
-    Select(0u2423); Clear() # open box
 endif
 
 # pre-process for merging
