@@ -18,6 +18,7 @@ if ($argc == 1)
     Print("Usage: ricty_discord_patch.pe [options] fontfamily-fontstyle.ttf ...")
     Print("")
     Print("Options:")
+    Print("  -space                    Enable visible hankaku space")
     Print("  -quotedbl                 Disable magnified \"")
     Print("  -quotesingle or -quote    Disable magnified \'")
     Print("  -asterisk                 Disable * moved downward a little")
@@ -44,6 +45,7 @@ if ($argc == 1)
 endif
 
 # set flags
+flag_space="false"
 flag_quotedbl="true"
 flag_quotesingle="true"
 flag_asterisk="true"
@@ -71,7 +73,10 @@ flag_asciitilde="true"
 i = 1
 while (i < $argc)
 if (Strsub($argv[i], 0, 1) == "-")
-    if ($argv[i] == "-quotedbl" || $argv[i] == "--quotedbl")
+    if ($argv[i] == "-space" || $argv[i] == "--space")
+        Print("Option: Enable visible hankaku space")
+        flag_space="true"
+    elseif ($argv[i] == "-quotedbl" || $argv[i] == "--quotedbl")
         Print("Option: Disable magnified \"")
         flag_quotedbl="false"
     elseif ($argv[i] == "-quotesingle" || $argv[i] == "--quotesingle" || $argv[i] == "-quote" || $argv[i] == "--quote")
@@ -182,6 +187,12 @@ SetFontNames(inputfamily + addfamily + "-" + inputstyle, \
 ########################################
 # edit some glyphs
 ########################################
+
+# space -> visible space
+if (flag_space == "true")
+    Select(0u2423); Copy() # open box
+    Select(0u0020); Paste()
+endif
 
 # " -> magnified "
 if (flag_quotedbl == "true")
