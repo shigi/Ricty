@@ -115,7 +115,7 @@ ricty_generator_help()
 # get options
 while getopts hVf:vln:wWbBZ:zas OPT
 do
-    case $OPT in
+    case "$OPT" in
         "h" )
             ricty_generator_help
             ;;
@@ -173,7 +173,7 @@ do
             echo "Option: Disable scaling down Migu 1M"
             scaling_down_flag="false"
             ;;
-        *   )
+        * )
             exit 1
             ;;
     esac
@@ -181,8 +181,7 @@ done
 shift `expr $OPTIND - 1`
 
 # check fontforge existance
-which $fontforge_cmd > /dev/null 2>&1
-if [ $? -ne 0 ]
+if ! which $fontforge_cmd > /dev/null 2>&1
 then
     echo "Error: ${fontforge_cmd} command not found" >&2
     exit 1
@@ -521,7 +520,7 @@ then
 fi
 
 # generate Ricty Discord (if the script exists)
-path2discord_patch=`dirname $0`/ricty_discord_patch.pe
+path2discord_patch=$(dirname $0)/ricty_discord_patch.pe
 if [ -r "$path2discord_patch" ]
 then
     $fontforge_cmd -script $path2discord_patch \
