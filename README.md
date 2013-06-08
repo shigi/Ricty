@@ -29,6 +29,10 @@ IPA ゴシックのベースとされている [TB ゴシック](http://www.type
 
 # バージョン
 
+## Version 3.2.2 (9 June 2013)
+
+* 全角括弧を半角括弧と差別化
+
 ## Version 3.2.1 (6 Nov. 2012)
 
 * M+ FONTS LICENSE 記述の除去 (Migu 1M の更新に追従)

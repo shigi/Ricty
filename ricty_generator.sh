@@ -2,7 +2,7 @@
 
 #
 # Ricty Generator
-ricty_version="3.2.2b"
+ricty_version="3.2.2"
 #
 # Author: Yasunori Yusa <lastname at save dot sys.t.u-tokyo.ac.jp>
 #
@@ -14,6 +14,7 @@ ricty_version="3.2.2b"
 # * Migu 1M     Version 20111002
 #                       20120411
 #                       20121030
+#                       20130430
 #
 # How to use:
 # 1. Install FontForge
@@ -472,6 +473,15 @@ i = 0; while (i < SizeOf(fontstyle_list))
     CenterInWidth()
     Select(0uff1a); Paste(); PasteWithOffset(0, 400)
     CenterInWidth()
+    # edit zenkaku brackets
+    Select(0u0028); Copy(); Select(0uff08); Paste(); Move(250, 0); SetWidth(1000) # (
+    Select(0u0029); Copy(); Select(0uff09); Paste(); Move(250, 0); SetWidth(1000) # )
+    Select(0u005b); Copy(); Select(0uff3b); Paste(); Move(250, 0); SetWidth(1000) # [
+    Select(0u005d); Copy(); Select(0uff3d); Paste(); Move(250, 0); SetWidth(1000) # ]
+    Select(0u007b); Copy(); Select(0uff5b); Paste(); Move(250, 0); SetWidth(1000) # {
+    Select(0u007d); Copy(); Select(0uff5d); Paste(); Move(250, 0); SetWidth(1000) # }
+    Select(0u003c); Copy(); Select(0uff1c); Paste(); Move(250, 0); SetWidth(1000) # <
+    Select(0u003e); Copy(); Select(0uff1e); Paste(); Move(250, 0); SetWidth(1000) # >
     # edit en dash
     Select(0u2013); Copy()
     PasteWithOffset(200, 0); PasteWithOffset(-200, 0)
