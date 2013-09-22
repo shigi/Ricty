@@ -237,7 +237,7 @@ endif
 if (flag_0 == "true")
     Select(0u00b7);  Copy() # middle dot
     Select(0u0030);  Paste(); CenterInWidth()
-    Select(65610);   Copy() # zero (Inconsolata's unused glyph)
+    Select(65545);   Copy() # zero (Inconsolata's unused glyph)
     Select(0u0030);  PasteInto()
     RemoveOverlap(); RoundToInt()
 endif
@@ -310,7 +310,7 @@ endif
 
 # r -> r of serif (Inconsolata's unused glyph)
 if (flag_r == "true")
-    Select(65608);  Copy()
+    Select(65543);  Copy()
     Select(0u0072); Paste()
 endif
 

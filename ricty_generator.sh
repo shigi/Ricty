@@ -22,30 +22,26 @@ ricty_version="3.2.2"
 #    Fedora/CentOS: # yum install fontforge
 #    OpenSUSE:      # zypper install fontforge
 #    Other Linux:   Get from http://fontforge.sourceforge.net/
-# 2. Get Inconsolata.otf
-#    from http://levien.com/type/myfonts/inconsolata.html
+# 2. Get Inconsolata-LGC(-Bold).sfd
+#    from https://github.com/MihailJP/Inconsolata-LGC
 # 3. Get migu-1m-regular/bold.ttf
 #    from http://mix-mplus-ipa.sourceforge.jp/
 # 4. Run this script
 #    % sh ricty_generator.sh auto
 #    or
-#    % sh ricty_generator.sh Inconsolata.otf migu-1m-regular.ttf migu-1m-bold.ttf
+#    % sh ricty_generator.sh Inconsolata-LGC.sfd Inconsolata-LGC-Bold.sfd migu-1m-regular.ttf migu-1m-bold.ttf
 # 5. Install Ricty
 #    % cp -f Ricty*.ttf ~/.fonts/
 #    % fc-cache -vf
 #
 
 # set familyname
-ricty_familyname="Ricty"
+ricty_familyname="RictyLGC"
 ricty_addfamilyname=""
 
 # set ascent and descent (line width parameters)
 ricty_ascent=835
 ricty_descent=215
-
-# set bold width of ASCII glyphs
-ascii_regular_width=0
-ascii_bold_width=30
 
 # set path to fontforge command
 fontforge_cmd="fontforge"
@@ -68,9 +64,13 @@ scaling_down_flag="true"
 modified_inconsolata_generator="modified_inconsolata_generator.pe"
 modified_inconsolata_regu="Modified-Inconsolata-Regular.sfd"
 modified_inconsolata_bold="Modified-Inconsolata-Bold.sfd"
+modified_inconsolata_italic="Modified-Inconsolata-Italic.sfd"
+modified_inconsolata_bolditalic="Modified-Inconsolata-BoldItalic.sfd"
 modified_migu1m_generator="modified_migu1m_generator.pe"
 modified_migu1m_regu="Modified-migu-1m-regular.sfd"
 modified_migu1m_bold="Modified-migu-1m-bold.sfd"
+modified_migu1m_italic="Modified-migu-1m-italic.sfd"
+modified_migu1m_bolditalic="Modified-migu-1m-bolditalic.sfd"
 ricty_generator="ricty_generator.pe"
 
 ########################################
@@ -93,7 +93,7 @@ _EOT_
 ricty_generator_help()
 {
     echo "Usage: ricty_generator.sh [options] auto"
-    echo "       ricty_generator.sh [options] Inconsolata.otf migu-1m-regular.ttf migu-1m-bold.ttf"
+    echo "       ricty_generator.sh [options] Inconsolata-LGC.sfd Inconsolata-LGC-Bold.sfd Inconsolata-LGC-Italic.sfd Inconsolata-LGC-BoldItalic.sfd migu-1m-regular.ttf migu-1m-bold.ttf"
     echo ""
     echo "Options:"
     echo "  -h                     Display this information"
@@ -104,8 +104,6 @@ ricty_generator_help()
     echo "  -n string              Set additional fontfamily name (\`\`Ricty string'')"
     echo "  -w                     Widen line space"
     echo "  -W                     Widen line space extremely"
-    echo "  -b                     Make bold-face ASCII glyphs more bold"
-    echo "  -B                     Make regular-/bold-face ASCII glyphs more bold"
     echo "  -Z unicode             Set visible zenkaku space copied from another glyph"
     echo "  -z                     Disable visible zenkaku space"
     echo "  -a                     Disable fullwidth ambiguous charactors"
@@ -114,7 +112,7 @@ ricty_generator_help()
 }
 
 # get options
-while getopts hVf:vln:wWbBZ:zas OPT
+while getopts hVf:vln:wWZ:zas OPT
 do
     case "$OPT" in
         "h" )
@@ -148,15 +146,6 @@ do
             echo "Option: Widen line space extremely"
             ricty_ascent=`expr $ricty_ascent + 256`
             ricty_descent=`expr $ricty_descent + 64`
-            ;;
-        "b" )
-            echo "Option: Make bold-face ASCII glyphs more bold"
-            ascii_bold_width=`expr $ascii_bold_width + 30`
-            ;;
-        "B" )
-            echo "Option: Make regular-/bold-face ASCII glyphs more bold"
-            ascii_regular_width=`expr $ascii_regular_width + 30`
-            ascii_bold_width=`expr $ascii_bold_width + 30`
             ;;
         "Z" )
             echo "Option: Set visible zenkaku space copied from another glyph: ${OPTARG}"
@@ -199,10 +188,13 @@ then
     done
     fonts_dirs=$tmp
     # search Inconsolata
-    input_inconsolata=`find $fonts_dirs -follow -name Inconsolata.otf | head -n 1`
-    if [ -z "$input_inconsolata" ]
+    input_inconsolata_regu=`find $fonts_dirs -follow -name Inconsolata-LGC.sfd | head -n 1`
+    input_inconsolata_bold=`find $fonts_dirs -follow -name Inconsolata-LGC-Bold.sfd | head -n 1`
+    input_inconsolata_italic=`find $fonts_dirs -follow -name Inconsolata-LGC-Italic.sfd | head -n 1`
+    input_inconsolata_bolditalic=`find $fonts_dirs -follow -name Inconsolata-LGC-BoldItalic.sfd | head -n 1`
+    if [ -z "$input_inconsolata_regu" -o -z "$input_inconsolata_bold" -o -z "$input_inconsolata_italic" -o -z "$input_inconsolata_bolditalic" ]
     then
-        echo "Error: Inconsolata.otf not found" >&2
+        echo "Error: Inconsolata-LGC(-Bold/Italic/BoldItalic).sfd not found" >&2
         exit 1
     fi
     # search Migu 1M
@@ -213,16 +205,31 @@ then
         echo "Error: migu-1m-regular/bold.ttf not found" >&2
         exit 1
     fi
-elif [ $# -eq 3 ]
+elif [ $# -eq 6 ]
 then
     # get args
-    input_inconsolata=$1
-    input_migu1m_regu=$2
-    input_migu1m_bold=$3
+    input_inconsolata_regu=$1
+    input_inconsolata_bold=$2
+    input_inconsolata_italic=$3
+    input_inconsolata_bolditalic=$4
+    input_migu1m_regu=$5
+    input_migu1m_bold=$6
     # check file existance
-    if [ ! -r "$input_inconsolata" ]
+    if [ ! -r "$input_inconsolata_regu" ]
     then
-        echo "Error: ${input_inconsolata} not found" >&2
+        echo "Error: ${input_inconsolata_regu} not found" >&2
+        exit 1
+    elif [ ! -r "$input_inconsolata_bold" ]
+    then
+        echo "Error: ${input_inconsolata_bold} not found" >&2
+        exit 1
+    elif [ ! -r "$input_inconsolata_italic" ]
+    then
+        echo "Error: ${input_inconsolata_italic} not found" >&2
+        exit 1
+    elif [ ! -r "$input_inconsolata_bolditalic" ]
+    then
+        echo "Error: ${input_inconsolata_bolditalic} not found" >&2
         exit 1
     elif [ ! -r "$input_migu1m_regu" ]
     then
@@ -234,8 +241,14 @@ then
         exit 1
     fi
     # check filename
-    [ "$(basename $input_inconsolata)" != "Inconsolata.otf" ] \
-        && echo "Warning: ${input_inconsolata} is really Inconsolata?" >&2
+    [ "$(basename $input_inconsolata_regu)" != "Inconsolata-LGC.sfd" ] \
+        && echo "Warning: ${input_inconsolata_regu} is really Inconsolata-LGC?" >&2
+    [ "$(basename $input_inconsolata_bold)" != "Inconsolata-LGC-Bold.sfd" ] \
+        && echo "Warning: ${input_inconsolata_bold} is really Inconsolata-LGC Bold?" >&2
+    [ "$(basename $input_inconsolata_italic)" != "Inconsolata-LGC-Italic.sfd" ] \
+        && echo "Warning: ${input_inconsolata_italic} is really Inconsolata-LGC Italic?" >&2
+    [ "$(basename $input_inconsolata_bold)" != "Inconsolata-LGC-Bold.sfd" ] \
+        && echo "Warning: ${input_inconsolata_bolditalic} is really Inconsolata-LGC BoldItalic?" >&2
     [ "$(basename $input_migu1m_regu)" != "migu-1m-regular.ttf" ] \
         && echo "Warning: ${input_migu1m_regu} is really Migu 1M Regular?" >&2
     [ "$(basename $input_migu1m_bold)" != "migu-1m-bold.ttf" ] \
@@ -272,70 +285,67 @@ cat > ${tmpdir}/${modified_inconsolata_generator} << _EOT_
 # print message
 Print("Generate modified Inconsolata.")
 
-# open Inconsolata
-Print("Find ${input_inconsolata}.")
-Open("${input_inconsolata}")
+# set parameters
+input_list  = ["${input_inconsolata_regu}", \\
+               "${input_inconsolata_bold}", \\
+               "${input_inconsolata_italic}", \\
+               "${input_inconsolata_bolditalic}"]
+output_list = ["${modified_inconsolata_regu}", \\
+               "${modified_inconsolata_bold}", \\
+               "${modified_inconsolata_italic}", \\
+               "${modified_inconsolata_bolditalic}"]
 
-# scale to standard glyph size
-ScaleToEm(860, 140)
+# begin loop of regular, bold, italic and bolditalic
+i = 0; while (i < SizeOf(input_list))
+    # open Inconsolata
+    Print("Find " + input_list[i])
+    Open(input_list[i])
 
-# remove ambiguous glyphs
-if ("$fullwidth_ambiguous_flag" == "true")
-    Select(0u00a4); Clear() # currency
-    Select(0u00a7); Clear() # section
-    Select(0u00a8); Clear() # dieresis
-    Select(0u00ad); Clear() # soft hyphen
-    Select(0u00b0); Clear() # degree
-    Select(0u00b1); Clear() # plus-minus
-    Select(0u00b4); Clear() # acute
-    Select(0u00b6); Clear() # pilcrow
-    Select(0u00d7); Clear() # multiply
-    Select(0u00f7); Clear() # divide
-    Select(0u2018); Clear() # left '
-    Select(0u2019); Clear() # right '
-    Select(0u201c); Clear() # left "
-    Select(0u201d); Clear() # right "
-    Select(0u2020); Clear() # dagger
-    Select(0u2021); Clear() # double dagger
-    Select(0u2026); Clear() # ...
-    Select(0u2122); Clear() # TM
-    Select(0u2191); Clear() # uparrow
-    Select(0u2193); Clear() # downarrow
-endif
+    Reencode("unicode")
 
-# pre-process for merging
-SelectWorthOutputting()
-ClearInstrs(); UnlinkReference()
+    # scale to standard glyph size
+    ScaleToEm(1000)
+    ScaleToEm(860, 140)
 
-# save regular-face
-Print("Save ${modified_inconsolata_regu}.")
-Save("${tmpdir}/${modified_inconsolata_regu}")
+    # remove ambiguous glyphs
+    if ("$fullwidth_ambiguous_flag" == "true")
+        Select(0u00a4); Clear() # currency
+        Select(0u00a7); Clear() # section
+        Select(0u00a8); Clear() # dieresis
+        Select(0u00ad); Clear() # soft hyphen
+        Select(0u00b0); Clear() # degree
+        Select(0u00b1); Clear() # plus-minus
+        Select(0u00b4); Clear() # acute
+        Select(0u00b6); Clear() # pilcrow
+        Select(0u00d7); Clear() # multiply
+        Select(0u00f7); Clear() # divide
+        Select(0u2018); Clear() # left '
+        Select(0u2019); Clear() # right '
+        Select(0u201c); Clear() # left "
+        Select(0u201d); Clear() # right "
+        Select(0u2020); Clear() # dagger
+        Select(0u2021); Clear() # double dagger
+        Select(0u2026); Clear() # ...
+        Select(0u2122); Clear() # TM
+        Select(0u2191); Clear() # uparrow
+        Select(0u2193); Clear() # downarrow
+    endif
 
-# make glyphs bold
-Print("While making Inconsolata bold, wait a moment...")
-SelectWorthOutputting()
-ExpandStroke(${ascii_bold_width}, 0, 0, 0, 1)
-Select(0u003e); Copy()           # >
-Select(0u003c); Paste(); HFlip() # <
-RoundToInt(); RemoveOverlap(); RoundToInt()
-
-# save bold-face
-Print("Save ${modified_inconsolata_bold}.")
-Save("${tmpdir}/${modified_inconsolata_bold}")
-Close()
-
-# open regular-face and make it bold
-if ($ascii_regular_width != 0)
-    Open("${tmpdir}/${modified_inconsolata_regu}")
-    Print("While making regular-face Inconsolata bold, wait a moment...")
+    # pre-process for merging
     SelectWorthOutputting()
-    ExpandStroke(${ascii_regular_width}, 0, 0, 0, 1)
-    Select(0u003e); Copy()           # >
-    Select(0u003c); Paste(); HFlip() # <
+    ClearInstrs(); UnlinkReference()
+
+    # scaling to fit half size of CJK
+    Scale(83, 88, 0, 0)
     RoundToInt(); RemoveOverlap(); RoundToInt()
-    Save("${tmpdir}/${modified_inconsolata_regu}")
+    Move(1, 0); SetWidth(3, 1)
+
+    # save regular-face
+    Save("${tmpdir}/" + output_list[i])
+    Print("Save " + output_list[i])
+
     Close()
-endif
+i += 1; endloop
 
 Quit()
 _EOT_
@@ -351,27 +361,41 @@ cat > ${tmpdir}/${modified_migu1m_generator} << _EOT_
 Print("Generate modified Migu 1M.")
 
 # set parameters
-input_list  = ["${input_migu1m_regu}",    "${input_migu1m_bold}"]
-output_list = ["${modified_migu1m_regu}", "${modified_migu1m_bold}"]
+input_list         = ["${input_migu1m_regu}",      "${input_migu1m_bold}"]
+output_list        = ["${modified_migu1m_regu}",   "${modified_migu1m_bold}"]
+output_italic_list = ["${modified_migu1m_italic}", "${modified_migu1m_bolditalic}"]
 
 # begin loop of regular and bold
 i = 0; while (i < SizeOf(input_list))
     # open Migu 1M
     Print("Find " + input_list[i] + ".")
     Open(input_list[i])
+
     # scale Migu 1M to standard glyph size
     ScaleToEm(860, 140)
     SelectWorthOutputting()
     ClearInstrs(); UnlinkReference()
+
     if ("$scaling_down_flag" == "true")
         Print("While scaling " + input_list[i]:t + ", wait a little...")
         SetWidth(-1, 1); Scale(91, 91, 0, 0); SetWidth(110, 2); SetWidth(1, 1)
         Move(23, 0); SetWidth(-23, 1)
     endif
     RoundToInt(); RemoveOverlap(); RoundToInt()
+
     # save modified Migu 1M
     Save("${tmpdir}/" + output_list[i])
     Print("Save " + output_list[i] + ".")
+
+    # skew Migu 1M
+    Print("While skewing " + input_list[i]:t + ", wait a little...")
+    Skew(12)
+    SetItalicAngle(12)
+
+    # save modified italic Migu 1M
+    Save("${tmpdir}/" + output_italic_list[i])
+    Print("Save " + output_italic_list[i] + ".")
+
     Close()
 i += 1; endloop
 Quit()
@@ -389,14 +413,18 @@ Print("Generate Ricty.")
 
 # set parameters
 inconsolata_list  = ["${tmpdir}/${modified_inconsolata_regu}", \\
-                     "${tmpdir}/${modified_inconsolata_bold}"]
+                     "${tmpdir}/${modified_inconsolata_bold}", \\
+                     "${tmpdir}/${modified_inconsolata_italic}", \\
+                     "${tmpdir}/${modified_inconsolata_bolditalic}"]
 migu1m_list       = ["${tmpdir}/${modified_migu1m_regu}", \\
-                     "${tmpdir}/${modified_migu1m_bold}"]
+                     "${tmpdir}/${modified_migu1m_bold}", \\
+                     "${tmpdir}/${modified_migu1m_italic}", \\
+                     "${tmpdir}/${modified_migu1m_bolditalic}"]
 fontfamily        = "$ricty_familyname"
 addfontfamily     = "$ricty_addfamilyname"
-fontstyle_list    = ["Regular", "Bold"]
-fontweight_list   = [400,       700]
-panoseweight_list = [5,         8]
+fontstyle_list    = ["Regular", "Bold", "Italic", "BoldItalic"]
+fontweight_list   = [400,       700,    400,      700]
+panoseweight_list = [5,         8,      5,        8]
 copyright         = "Ricty Generator Author: Yasunori Yusa\n" \\
                   + "Copyright (c) 2006 Raph Levien\n" \\
                   + "Copyright (c) 2006-2012 itouhiro\n" \\
@@ -536,6 +564,8 @@ then
     $fontforge_cmd -script $path2discord_patch \
         ${ricty_familyname}${ricty_addfamilyname}-Regular.ttf \
         ${ricty_familyname}${ricty_addfamilyname}-Bold.ttf \
+        ${ricty_familyname}${ricty_addfamilyname}-Italic.ttf \
+        ${ricty_familyname}${ricty_addfamilyname}-BoldItalic.ttf \
         2> $redirection_stderr || exit 4
 fi
 

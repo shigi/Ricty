@@ -94,10 +94,10 @@ IPA ゴシックのベースとされている [TB ゴシック](http://www.type
 [FontForge 公式サイト](http://fontforge.sourceforge.net/ja/)より
 入手してください。
 
-## Inconsolata のインストール
+## Inconsolata LGC のインストール
 
-[Inconsolata 公式サイト](http://levien.com/type/myfonts/inconsolata.html)より
-OpenType file を入手し、インストールしてください。
+[Inconsolata LGC サイト](https://github.com/MihailJP/Inconsolata-LGC)より
+sfd file を入手し、インストールしてください。
 
 ## Migu 1M のインストール
 
@@ -112,7 +112,7 @@ OpenType file を入手し、インストールしてください。
 
 もしくは、
 
-    % sh ricty_generator.sh Inconsolata.otf migu-1m-regular.ttf migu-1m-bold.ttf
+    % sh ricty_generator.sh Inconsolata-LGC.sfd Inconsolata-LGC-Bold.sfd Inconsolata-LGC-Italic.sfd Inconsolata-LGC-BoldItalic.sfd migu-1m-regular.ttf migu-1m-bold.ttf
 
 生成には 2–5 分程の時間がかかります。
 
@@ -154,14 +154,6 @@ fontforge の警告メッセージを表示する。
 ### `-W`
 
 行間をかなり広くする。
-
-### `-b`
-
-ASCII グリフのボールド体をより太くする。
-
-### `-B`
-
-ASCII グリフのレギュラー/ボールド体をより太くする (レギュラーを、デフォルトのボールド体程度の太さにする)。
 
 ### `-Z unicode`
 
