@@ -255,11 +255,11 @@ fi
 # remove tmp by trapping
 if [ "$leaving_tmp_flag" = "false" ]
 then
-    trap "if [ -d \"$tmpdir\" ]; then echo 'Remove temporary files'; rm -rf $tmpdir; echo 'Abnormal terminated'; fi; exit 3" HUP INT QUIT
-    trap "if [ -d \"$tmpdir\" ]; then echo 'Remove temporary files'; rm -rf $tmpdir; echo 'Abnormal terminated'; fi" EXIT
+    trap "if [ -d \"$tmpdir\" ]; then echo 'Remove temporary files'; rm -rf $tmpdir; fi; echo 'Abnormal terminated'; exit 3" HUP INT QUIT
+    trap "if [ -d \"$tmpdir\" ]; then echo 'Remove temporary files'; rm -rf $tmpdir; fi; echo 'Abnormal terminated'" ERR
 else
-    trap "if [ -d \"$tmpdir\" ]; then echo 'Abnormal terminated'; fi; exit 3" HUP INT QUIT
-    trap "if [ -d \"$tmpdir\" ]; then echo 'Abnormal terminated'; fi" EXIT
+    trap "echo 'Abnormal terminated'; exit 3" HUP INT QUIT
+    trap "echo 'Abnormal terminated'" ERR
 fi
 
 ########################################
